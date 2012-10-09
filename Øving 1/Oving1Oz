@@ -1,0 +1,208 @@
+{Browse 'hello world'}
+{Show 'Hello World!'}
+
+declare X
+X = 42*23
+{Browse X}
+
+declare
+X Y
+X = 'dette er magisk'
+{Browse X}
+Y = X
+
+declare
+fun {Min X Y}
+   if X<Y then
+      X
+   else
+      Y
+   end
+end
+{Browse {Min 30 40}}
+
+%-----------------Oppgave 3------------
+
+declare
+fun {IsBigger Number Threshold}
+   if Number > Threshold then
+      true
+   else
+      false
+   end
+end
+
+%---------------Oppgave 4------------
+
+declare
+Pi = 3.14151
+
+proc {Circle R}
+   A D O
+in
+   A = Pi * R * R
+   D = 2.0 * R
+   O = Pi * D
+   {Browse A}
+   {Browse D}
+   {Browse O}
+end
+{Circle 5.0}
+
+%---------------Oppgave 5----------------------
+
+declare
+fun {SumTo First Last}
+   if First==Last then
+      Last
+   else
+      First +  {SumTo First+1 Last}
+   end
+end
+{Browse {SumTo 3 5}}
+
+fun {Max X Y}
+   if X==0 then
+      Y
+   else if Y==0 then
+	   X
+	else
+	   1 + {Max X-1 Y-1}
+	end
+   end
+end
+
+{Browse {Max 4 5}}
+	  
+	   
+%----------- Oppgave 7 -------------
+
+fun {Length Xs}
+   case Xs of H|T then
+      1 + {Length T}
+   [] nil then
+      0
+   end
+end
+{Browse {Length[1 2 3 4]}}
+
+fun {Take L N}
+   case L of H|T then
+      if N >= {Length L} then
+	 L
+      else
+	 if N \= 0 then
+	    H|{Take T N-1}
+	 else
+	    nil
+	 end
+      end
+   []nil then nil
+   end
+end
+
+{Browse {Take [1 2 3 4 5] 3}}
+
+
+fun {Drop L N}
+   case L of H|T then
+      if N>= {Length L} then
+	 nil
+      else
+	 if N > 1 then
+	    {Drop T N-1}
+	 else
+	    T
+	 end
+      end
+   []nil then nil
+   end
+end
+
+{Browse {Drop [1 2 3 4 5 6 7 8 9] 2}}
+
+% [1]|[2 3] --> [[1] 2 3] og 1|[2 3] --> [1 2 3]
+fun {Append X Y}
+   case X of H|T then
+      H|{Append T Y}
+   []nil then
+      Y
+   end
+end
+
+{Browse {Append [1 2] [3 4]}}
+
+fun {Memberz L Y}
+   case L of H|T then
+      if H\=Y then
+	 {Memberz T Y}
+      else
+	 true
+      end
+   [] nil then false
+   end
+end
+{Browse {Memberz [1 2 3] 2}}
+
+
+fun {Position L Y}
+   case L of H|T then
+      if H\=Y then
+	 1 + {Position T Y}
+      else
+	 1
+      end
+   []nil then nil
+   end
+end
+
+{Browse {Position [1 2 3] 3}}
+   
+
+%-------------- Oppgave 8 ---------------
+
+%key({String.toAtom H})
+
+
+declare Operators Tokenizer in
+
+Keyw = ["local" "in" "if" "then" "else" "elseif" "while" "end"]
+Operators = ["+" "-" "*" "/"]
+%atomer
+%identifikatorer id
+%=
+%==
+
+fun {Tokenizer Ls}
+   case Ls of H|T then
+      if {Member H Keyw} then
+	 key({String.toAtom H})|{Tokenizer T}
+      elseif {Member H Operators} then
+	 op({String.toAtom H})|{Tokenizer T}
+      elseif H == "==" then
+	 compare({String.toAtom H})|{Tokenizer T}
+      elseif H== "=" then
+	 equal({String.toAtom H})|{Tokenizer T}
+      elseif case H of Letter|_ then
+		if Letter >= &a andthen Letter =< &z then
+		   atom({String.toAtom H})|{Tokenizer T}
+		elseif Letter >= &A andthen Letter =< &Z then
+		   id({String.toAtom H})|{Tokenizer T}
+		end
+	     end
+      else
+% illegal({String.toAtom H})|{Tokenizer T}
+      end      
+   []nil then nil
+   end
+end
+
+
+{Browse {Tokenizer ["local" "local" "+" "b" "==" "="]}}
+
+   
+	      
+
+
+
+   
